@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow AI — Smart Task Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <div class="logo-icon">⚡</div>
+        <div>
+          <h1>TaskFlow</h1>
+          <span>AI Task Manager</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-section="dashboard">
+          <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <button class="nav-btn" data-section="tasks">
+          <span class="nav-icon">✅</span> My Tasks
+        </button>
+        <button class="nav-btn" data-section="ai">
+          <span class="nav-icon">🤖</span> AI Planner
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="api-badge">
+          <span class="pulse-dot"></span> API Connected
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <div class="greeting">
+          <h2 id="greeting-text">Good Morning 👋</h2>
+          <p>Manage your tasks with AI superpowers</p>
+        </div>
+        <button class="btn-add" id="btn-add-task">
+          <span>+</span> New Task
+        </button>
+      </header>
+
+      <!-- STATS CARDS -->
+      <section class="stats-grid" id="dashboard-section">
+        <div class="stat-card total">
+          <div class="stat-icon">📋</div>
+          <div class="stat-info">
+            <span class="stat-num" id="stat-total">0</span>
+            <span class="stat-label">Total Tasks</span>
+          </div>
+          <div class="stat-ring" id="ring-total"></div>
+        </div>
+        <div class="stat-card pending">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-info">
+            <span class="stat-num" id="stat-pending">0</span>
+            <span class="stat-label">Pending</span>
+          </div>
+        </div>
+        <div class="stat-card progress">
+          <div class="stat-icon">🔄</div>
+          <div class="stat-info">
+            <span class="stat-num" id="stat-progress">0</span>
+            <span class="stat-label">In Progress</span>
+          </div>
+        </div>
+        <div class="stat-card done">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <span class="stat-num" id="stat-done">0</span>
+            <span class="stat-label">Completed</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROGRESS BAR -->
+      <section class="progress-section">
+        <div class="progress-header">
+          <span>Overall Progress</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <!-- TASK FORM (MODAL-LIKE CARD) -->
+        <section class="card form-card" id="form-card">
+          <div class="card-header">
+            <h2 id="form-title">✨ Create New Task</h2>
+            <button class="close-btn" id="cancel-btn" hidden>✕</button>
+          </div>
+          <form id="task-form">
+            <input type="hidden" id="task-id" />
+            <div class="field">
+              <label>Title *</label>
+              <input type="text" id="title" placeholder="What needs to be done?" required />
+            </div>
+            <div class="field">
+              <label>Description</label>
+              <textarea id="description" rows="3" placeholder="Add details..."></textarea>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Status</label>
+                <div class="status-toggle">
+                  <button type="button" class="status-btn active" data-val="pending">Pending</button>
+                  <button type="button" class="status-btn" data-val="in-progress">In Progress</button>
+                  <button type="button" class="status-btn" data-val="completed">Done</button>
+                </div>
+                <input type="hidden" id="status" value="pending" />
+              </div>
+              <div class="field">
+                <label>Due Date</label>
+                <input type="date" id="dueDate" />
+              </div>
+            </div>
+            <button type="submit" class="btn-primary" id="submit-btn">
+              <span class="btn-text">🚀 Add Task</span>
+            </button>
+          </form>
+        </section>
+
+        <!-- AI PLANNER -->
+        <section class="card ai-card" id="ai-section">
+          <div class="card-header">
+            <h2>🤖 AI Task Planner</h2>
+            <span class="ai-badge">Powered by Groq</span>
+          </div>
+          <p class="hint">Describe any task — AI will generate a smart step-by-step plan for you.</p>
+          <textarea id="ai-description" rows="3" placeholder="e.g. I need to build a mobile app in one month..."></textarea>
+          <button class="btn-ai" id="ai-btn">
+            <span class="ai-sparkle">✦</span> Generate AI Plan
+          </button>
+          <div id="ai-result" class="ai-result" hidden></div>
+        </section>
+      </div>
+
+      <!-- TASK LIST -->
+      <section class="card task-section" id="tasks-section">
+        <div class="card-header">
+          <h2>✅ My Tasks</h2>
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="in-progress">In Progress</button>
+            <button class="filter-btn" data-filter="completed">Done</button>
+            <input type="search" id="search" placeholder="🔍 Search..." />
+          </div>
+        </div>
+        <div id="loader" class="loader" hidden>
+          <div class="spinner"></div> Loading tasks...
+        </div>
+        <div id="task-list" class="task-list"></div>
+        <div id="empty" class="empty" hidden>
+          <div class="empty-icon">📭</div>
+          <p>No tasks found. Create one to get started!</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>

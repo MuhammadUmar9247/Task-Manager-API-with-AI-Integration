@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: task-manager-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /
